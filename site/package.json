@@ -1,11 +1,14 @@
 {
+  "engine": {
+    "node": "16.0.0"
+  },
   "name": "next-commerce",
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "analyze": "BUNDLE_ANALYZE=both next build",
     "lint": "next lint",
     "prettier-fix": "prettier --write .",
