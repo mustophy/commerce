@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "16.0.0"
+  },
   "name": "next-commerce",
   "version": "0.0.1",
   "license": "MIT",
