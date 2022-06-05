@@ -1,7 +1,4 @@
 {
-  "engines": {
-    "node": "16.0.0"
-  },
   "name": "commerce",
   "license": "MIT",
   "private": true,
