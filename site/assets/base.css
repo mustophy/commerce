@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --primary: #ffffff;
   --primary-2: #f1f3f5;
   --secondary: #000000;
@@ -32,9 +32,9 @@
   --accent-9: #000;
   --font-sans: -apple-system, system-ui, BlinkMacSystemFont, 'Helvetica Neue',
     'Helvetica', sans-serif;
-}
-
-[data-theme='dark'] {
+} */
+/* [data-theme='dark'] */
+:root {
   --primary: #161616;
   --primary-2: #111;
   --secondary: #ffffff;
