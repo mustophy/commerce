@@ -3,6 +3,8 @@ import { Logo, Button, Input } from '@components/ui'
 import useLogin from '@framework/auth/use-login'
 import { useUI } from '@components/ui/context'
 import { validate } from 'email-validator'
+import { signInWithPopup, GoogleAuthProvider} from 'firebase/auth'
+import { authentication } from './firebaseConfig'
 
 const LoginView: React.FC = () => {
   // Form State
@@ -15,6 +17,7 @@ const LoginView: React.FC = () => {
   const { setModalView, closeModal } = useUI()
 
   const login = useLogin()
+  // const googleLogin = useGoogleLogin()
 
   const handleLogin = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault()
@@ -38,6 +41,28 @@ const LoginView: React.FC = () => {
       setLoading(false)
       setDisabled(false)
     }
+  }
+
+  const loginWithGoogle = async (e: React.SyntheticEvent<EventTarget>) => {
+    e.preventDefault()
+
+    const provider = new GoogleAuthProvider()
+    await signInWithPopup(authentication, provider)
+    .then(async(re) => {
+      const userEmail = re.user.email || ''
+      try {
+        setLoading(true)
+        setMessage('')
+        await fetch(`/api/googleLogin?email=${userEmail}`)
+        setLoading(false)
+        closeModal()
+      } catch (e: any) {
+        setMessage(e.errors[0].message)
+        setLoading(false)
+        setDisabled(false)
+      }
+    })
+    .catch(re => console.log(re))
   }
 
   const handleValidation = useCallback(() => {
@@ -84,6 +109,14 @@ const LoginView: React.FC = () => {
           disabled={disabled}
         >
           Log In
+        </Button>
+        <Button
+          variant="slim"
+          onClick={loginWithGoogle}
+          loading={loading}
+          disabled={disabled}
+        >
+          Log In With Google
         </Button>
         <div className="pt-1 text-center text-sm">
           <span className="text-accent-7">Don't have an account?</span>
