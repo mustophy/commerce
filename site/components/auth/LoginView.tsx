@@ -3,7 +3,7 @@ import { Logo, Button, Input } from '@components/ui'
 import useLogin from '@framework/auth/use-login'
 import { useUI } from '@components/ui/context'
 import { validate } from 'email-validator'
-import { signInWithPopup, GoogleAuthProvider} from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { authentication } from './firebaseConfig'
 
 const LoginView: React.FC = () => {
@@ -17,7 +17,6 @@ const LoginView: React.FC = () => {
   const { setModalView, closeModal } = useUI()
 
   const login = useLogin()
-  // const googleLogin = useGoogleLogin()
 
   const handleLogin = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault()
@@ -48,21 +47,25 @@ const LoginView: React.FC = () => {
 
     const provider = new GoogleAuthProvider()
     await signInWithPopup(authentication, provider)
-    .then(async(re) => {
-      const userEmail = re.user.email || ''
-      try {
-        setLoading(true)
-        setMessage('')
-        await fetch(`/api/googleLogin?email=${userEmail}`)
-        setLoading(false)
-        closeModal()
-      } catch (e: any) {
-        setMessage(e.errors[0].message)
-        setLoading(false)
-        setDisabled(false)
-      }
-    })
-    .catch(re => console.log(re))
+      .then(async (re) => {
+        const email = re.user.email!;
+        const password = re.user.uid;
+        try {
+          setLoading(true)
+          setMessage('')
+          await login({
+            email,
+            password,
+          })
+          setLoading(false)
+          closeModal()
+        } catch (e: any) {
+          setMessage(e.errors[0].message)
+          setLoading(false)
+          setDisabled(false)
+        }
+      })
+      .catch(re => console.log(re))
   }
 
   const handleValidation = useCallback(() => {

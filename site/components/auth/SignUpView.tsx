@@ -4,8 +4,10 @@ import { Info } from '@components/icons'
 import { useUI } from '@components/ui/context'
 import { Logo, Button, Input } from '@components/ui'
 import useSignup from '@framework/auth/use-signup'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { authentication } from './firebaseConfig'
 
-interface Props {}
+interface Props { }
 
 const SignUpView: FC<Props> = () => {
   // Form State
@@ -40,10 +42,39 @@ const SignUpView: FC<Props> = () => {
       })
       setLoading(false)
       closeModal()
-    } catch ( e: any ) {
+    } catch (e: any) {
       setMessage(e.errors[0].message)
       setLoading(false)
     }
+  }
+
+  const handleGoogleSignUp = async (e: React.SyntheticEvent<EventTarget>) => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(authentication, provider)
+      .then(async (re) => {
+        try {
+          const email = re.user.email!;
+          const password = re.user.uid;
+          const fullName = re.user.displayName;
+          const nameArr = fullName?.split(' ')!;
+          const firstName = nameArr[0];
+          const lastName = nameArr[1];
+          setLoading(true)
+          setMessage('')
+          await signup({
+            email,
+            firstName,
+            lastName,
+            password,
+          })
+          setLoading(false)
+          closeModal()
+        } catch (e: any) {
+          setMessage(e.errors[0].message)
+          setLoading(false)
+        }
+      })
+      .catch((e: any) => {})
   }
 
   const handleValidation = useCallback(() => {
@@ -93,6 +124,17 @@ const SignUpView: FC<Props> = () => {
             disabled={disabled}
           >
             Sign Up
+          </Button>
+        </div>
+
+        <div className="pt-2 w-full flex flex-col">
+          <Button
+            variant="slim"
+            onClick={handleGoogleSignUp}
+            loading={loading}
+            disabled={disabled}
+          >
+            Sign Up With Google
           </Button>
         </div>
 
